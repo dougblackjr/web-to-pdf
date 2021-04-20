@@ -27,8 +27,14 @@ class ScreenshotController extends Controller
 					->delay($request->delay * 1000 ?? 0)
 					->savePdf($path);
 
-		return $request->download
-				? response()->download($path)
-				: response()->json(['path' => config('app.url') . '/storage/' . $filename]);
+		if($request->download) {
+			return response()->download($path);
+		}
+
+		if($request->view) {
+			return response()->file($path);
+		}
+
+		return response()->json(['path' => config('app.url') . '/storage/' . $filename]);
 	}
 }
